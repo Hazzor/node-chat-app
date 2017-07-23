@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000 ;
 var app = express();
@@ -15,15 +16,8 @@ app.use(express.static(publicPath));
 io.on('connection' , (socket)=>{
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from : 'admin',
-        text : 'welcome to the chat app'
-    });
-    socket.broadcast.emit('newMessage', {
-        text : 'New user joined',
-        from : 'admin',
-        createdAt : new Date().getTime()
-    })
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
     // socket.emit('newEmail', {
     //     from : 'hester@gmail.com',
@@ -37,22 +31,18 @@ io.on('connection' , (socket)=>{
     //     createdAt : new Date().getTime().toString()
     // });
 
-//     socket.on('createMessage', (message)=>{
-//         console.log('new message from client',message);
-// // io broadcast to others
-//         // io.emit('newMessage', {
-//         //     from : message.from,
-//         //     text : message.text,
-//         //     createdAt : new Date().getTime()
-//         // });
+    socket.on('createMessage', (message)=>{
+        console.log('new message from client',message);
+// io broadcast to others
+        io.emit('newMessage', generateMessage(message.from, message.text));
 
-// //emit to other people but not you
-//         // socket.broadcast.emit('newMessage', {
-//         //     from : message.from,
-//         //     text : message.text,
-//         //     createdAt : new Date().getTime()
-//         // });
-//     });
+//emit to other people but not you
+        // socket.broadcast.emit('newMessage', {
+        //     from : message.from,
+        //     text : message.text,
+        //     createdAt : new Date().getTime()
+        // });
+    });
 
     socket.on('createEmail', (newEmail)=>{
         console.log('new email from client', newEmail);
