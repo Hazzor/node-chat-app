@@ -31,10 +31,11 @@ io.on('connection' , (socket)=>{
     //     createdAt : new Date().getTime().toString()
     // });
 
-    socket.on('createMessage', (message)=>{
+    socket.on('createMessage', (message, callback)=>{
         console.log('new message from client',message);
 // io broadcast to others
         io.emit('newMessage', generateMessage(message.from, message.text));
+        if (callback) callback('Server received your message');
 
 //emit to other people but not you
         // socket.broadcast.emit('newMessage', {
