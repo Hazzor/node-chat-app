@@ -16,6 +16,17 @@ socket.on('connect', function (){
     // });
 });
 
+var username = 'User';
+jQuery('#username-form').on('submit', function(e) {
+
+    e.preventDefault();
+    username = jQuery('[name = username]').val();
+    jQuery('[name = username]').val('');
+    alert('Username have been set to '+ username);
+
+});
+
+console.log(username);
 socket.on('disconnect', function () {
 console.log('Disconnected to server');
 });
@@ -45,7 +56,7 @@ jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();
 
     socket.emit('createMessage', {
-        from : 'User',
+        from : username,
         text : jQuery('[name = message]').val()
     }, function (){
 
