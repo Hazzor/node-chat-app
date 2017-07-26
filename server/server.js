@@ -45,7 +45,7 @@ io.on('connection' , (socket)=>{
         
         if (user) {
 // io broadcast to others
-            io.to(user.room).emit('newLocationMessage', generateLocationMessage(`${user.name}`, `${position.latitude}` , `${position.longitude}`));
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, position.latitude , position.longitude));
         }
 
       
