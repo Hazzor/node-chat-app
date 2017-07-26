@@ -57,8 +57,8 @@ class Users {
             return user.room;
         })
 
-        return rooms.filter((value, index, self) => {
-            self.indexOf(value) === index
+        return rooms.filter((room, index, rooms) => {
+            return rooms.indexOf(room) === index
         });
         
   
