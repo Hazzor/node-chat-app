@@ -34,7 +34,7 @@ socket.on('connect', function (){
             alert(err);
             window.location.href = '/';
         } else {
-            console.log('haha no error');
+            // console.log('haha no error');
         }
     });
 
@@ -98,9 +98,9 @@ socket.on('updateUserList', function (users) {
     jQuery('#users').html(ol);
 });
 
-socket.on('newEmail', function(email) {
-    console.log('New email', email);
-});
+// socket.on('newEmail', function(email) {
+//     console.log('New email', email);
+// });
 
 socket.on('newMessage', function(message) {
 
@@ -162,10 +162,10 @@ locationButton.on('click', function() {
             latitude : position.coords.latitude,
             longitude : position.coords.longitude
         });
-        console.log('passed test');
+        // console.log('passed test');
     }, function () {
         locationButton.removeAttr('disabled').text('Send location');
-        alert('Unble to fetch location');
-        console.log('passed test 2');
+        alert('Unable to fetch location');
+        // console.log('passed test 2');
     })
 })

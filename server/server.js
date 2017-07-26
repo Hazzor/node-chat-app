@@ -52,7 +52,7 @@ io.on('connection' , (socket)=>{
             console.log(users.getRoomlist());
             return callback();
         } else {
-            return callback('Use other username motherfucker');
+            return callback('Please use other username');
         }
 
     });
