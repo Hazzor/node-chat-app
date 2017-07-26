@@ -41,13 +41,24 @@ io.on('connection' , (socket)=>{
     });
 
     socket.on('createLocationMessage', (position)=>{
-        io.emit('newLocationMessage', generateLocationMessage(`${position.from}`, `${position.latitude}` , `${position.longitude}`))
+        var user = users.getUser(socket.id);
+        
+        if (user) {
+// io broadcast to others
+            io.to(user.room).emit('newLocationMessage', generateLocationMessage(`${user.name}`, `${position.latitude}` , `${position.longitude}`));
+        }
+
+      
     });
 
     socket.on('createMessage', (message, callback)=>{
-        console.log('new message from client',message);
+        
+        var user = users.getUser(socket.id);
+
+        if(user && isRealString(message.text)) {
 // io broadcast to others
-        io.emit('newMessage', generateMessage(message.from, message.text));
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text))
+        }
         if (callback) callback('Server received your message');
 
 //emit to other people but not you

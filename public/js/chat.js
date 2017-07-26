@@ -25,6 +25,7 @@ if(clientHeight + scrollTop + newMessageHeight + 5*lastMessageHeight >= scrollHe
 
 socket.on('connect', function (){
     console.log('Connected to server');
+    console.log(socket.id);
 
     var params = jQuery.deparam(window.location.search);
 
@@ -71,17 +72,16 @@ socket.on('newLocationMessage', function (message) {
 
 });
 
-var username = 'User';
-jQuery('#username-form').on('submit', function(e) {
+// var username = 'User';
+// jQuery('#username-form').on('submit', function(e) {
 
-    e.preventDefault();
-    username = jQuery('[name = username]').val();
-    jQuery('[name = username]').val('');
-    alert('Username have been set to '+ username);
+//     e.preventDefault();
+//     username = jQuery('[name = username]').val();
+//     jQuery('[name = username]').val('');
+//     alert('Username have been set to '+ username);
 
-});
+// });
 
-console.log(username);
 socket.on('disconnect', function () {
     console.log('Disconnected to server');
 });
@@ -91,7 +91,7 @@ socket.on('updateUserList', function (users) {
     var ol = jQuery('<ol></ol>');
 
     users.forEach(function(user) {
-
+//append one by one all the user name
         ol.append(jQuery('<li></li>').text(user));
     });
 
@@ -135,7 +135,6 @@ jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();
 
     socket.emit('createMessage', {
-        from : username,
         text : messageText.val()
     }, function (){
         messageText.val('');
@@ -155,12 +154,13 @@ locationButton.on('click', function() {
         // console.log(position)
         locationButton.removeAttr('disabled').text('Send location');
         socket.emit('createLocationMessage', {
-            from : username,
             latitude : position.coords.latitude,
             longitude : position.coords.longitude
         });
+        console.log('passed test');
     }, function () {
-        locationButton.removeAttr('disabled').text('Sending location...');
+        locationButton.removeAttr('disabled').text('Send location');
         alert('Unble to fetch location');
+        console.log('passed test 2');
     })
 })
