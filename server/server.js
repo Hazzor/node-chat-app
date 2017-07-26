@@ -18,26 +18,43 @@ app.use(express.static(publicPath));
 //listen to any conn and create web socket to individual client
 io.on('connection' , (socket)=>{
     console.log('New user connected');
-    console.log(socket.id);
+    
+
+    socket.emit('updateRoomList', users.getRoomlist());
 
     socket.on('join', (params,callback)=>{
         if(!isRealString(params.name) || !isRealString(params.room)) {
             return  callback('Name and room name are required');
         }
 
-        socket.join(params.room);
-        // socket.leave('room name');
-        // io.emit -> io.to('room name').emit
-        // socket.broadcast.emit -> socket.broadcast.to('room name').emit
-        // socket.emit -> 
-        // users.removeUser(socket.id); //in case user already in room
-        users.addUser(socket.id, params.name, params.room);
+        var lroom = params.room.toLowerCase();
 
-        io.to(params.room).emit('updateUserList', users.getUserlist(params.room));
+        var nameArray = users.getUserlist(lroom);
+        var name = nameArray.filter((username)=>{
+            return username === params.name;
+        });
 
-        socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-        socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
-        callback();
+
+        if(!name[0]) {
+
+            socket.join(lroom);
+            // socket.leave('room name');
+            // io.emit -> io.to('room name').emit
+            // socket.broadcast.emit -> socket.broadcast.to('room name').emit
+            // socket.emit -> 
+            // users.removeUser(socket.id); //in case user already in room
+            users.addUser(socket.id, params.name, lroom);
+
+            io.to(lroom).emit('updateUserList', users.getUserlist(lroom));
+
+            socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+            socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
+            console.log(users.getRoomlist());
+            return callback();
+        } else {
+            return callback('Use other username motherfucker');
+        }
+
     });
 
     socket.on('createLocationMessage', (position)=>{
@@ -80,6 +97,7 @@ io.on('connection' , (socket)=>{
         if (user) {
             io.to(user.room).emit('updateUserList', users.getUserlist(user.room));
             io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`));
+            console.log(users.getRoomlist());
         }
 
     });

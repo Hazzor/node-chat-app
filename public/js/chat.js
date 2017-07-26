@@ -1,7 +1,7 @@
 // use function instead of template string
 
 // create connection instance, not always on(client)
-var socket = io();
+let socket = io();
 
 function scrollToBottom() {
 //selectors
@@ -140,6 +140,11 @@ jQuery('#message-form').on('submit', function(e) {
         messageText.val('');
     });
     
+});
+
+jQuery('#leave_room').on('click', function () {
+    socket.emit('disconnect');
+    window.location.href = '/';
 });
 
 var locationButton = jQuery('#send-location');
